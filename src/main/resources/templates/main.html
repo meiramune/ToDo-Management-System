@@ -66,7 +66,7 @@
       <p class="calendar_title_text sd">SAT</p>
      </div>
     </div>
-    <div class="calendar_row sd" th:each="week : ${matrix}">
+    <div class="calendar_row sd" th:each="week : ${month}">
      <div class="calendar_box  sd" th:each="day : ${week}">
       <div>
        <a th:href="@{/main/create/{date}(date=${day})}">[[${day.dayOfMonth}]]</a>
