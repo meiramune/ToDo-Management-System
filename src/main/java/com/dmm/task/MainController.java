@@ -7,27 +7,30 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class MainController {
 
 	@RequestMapping("/main")
-	public String main(Model model) {
+	public String main(Model model,LocalDate date) {
 		// ListのListを用意
 		List<List<LocalDate>> month = new LinkedList<>();
 
 		// 1週間分のLocalDateを格納するList
 		List<LocalDate> week = new LinkedList<LocalDate>();
-
-//		LocalDate d;
-//		if (date == null) {
-//			d = LocalDate.now().withDayOfMonth(1);
-//			;
 //
-//		} else {
-//			d = date;
-//		}
+		LocalDate d;
+		if (date == null) {
+			d = LocalDate.now().withDayOfMonth(1);
+			;
+
+		} else {
+			d = date;
+		}
 
 		// LocalDateで今の月の1日目を定義
 		LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
@@ -47,7 +50,7 @@ public class MainController {
 			// マイナスして前月分のLocalDateを求める
 			startOfMonth = startOfMonth.minusDays(dayOfWeekValue);
 		}
-
+//
 		boolean judge = false;
 		while (!judge) {
 
@@ -67,10 +70,33 @@ public class MainController {
 
 		}
 
-		model.addAttribute("month", month);
+		model.addAttribute("matrix", month);
 
 		return "main";
+		
+		
 	}
+	
+	
+	@PostMapping("/main/create")
+	public String create(Model model) {
+	MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
+	
+	model.addAttribute("tasks", tasks);
+	
+	return "main";
+	
+	//日付が押されたら登録画面に遷移する？
+//	@PostMapping("/main/create/{date}")
+//	public String create() {
+//		return "create";
+		
+		
+		
+	}
+	
+	
+	
 
 }
 
