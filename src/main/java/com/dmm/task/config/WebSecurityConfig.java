@@ -37,11 +37,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/loginForm").permitAll() // loginFormは、全ユーザからのアクセスを許可
 				.anyRequest().authenticated(); // loginForm以外は、認証を求める
 		
-	    @Override
-		public void configure(WebSecurity web) throws Exception {
-			// 画像、JavaScript、cssは認可の対象外とする
-			web.debug(false).ignoring().antMatchers("/images/**", "/js/**", "/css/**");
-		}
 
 		// ログイン設定
 		http.formLogin() // フォーム認証の有効化
@@ -57,6 +52,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll(); // 全ユーザに対して許可
 		
 		
+	}
+    @Override
+	public void configure(WebSecurity web) throws Exception {
+		// 画像、JavaScript、cssは認可の対象外とする
+		web.debug(false).ignoring().antMatchers("/images/**", "/js/**", "/css/**");
 	}
 
 }
