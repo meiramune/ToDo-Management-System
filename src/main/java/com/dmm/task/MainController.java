@@ -2,20 +2,32 @@ package com.dmm.task;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.dmm.task.data.entity.Tasks;
+import com.dmm.task.data.repository.TaskRepository;
+import com.dmm.task.form.TaskForm;
+import com.dmm.task.service.AccountUserDetails;
 
 @Controller
 public class MainController {
 
+	@Autowired
+	private TaskRepository rapo;
+
 	@RequestMapping("/main")
-	public String main(Model model,LocalDate date) {
+	public String main(Model model, LocalDate date) {
 		// ListのListを用意
 		List<List<LocalDate>> month = new LinkedList<>();
 
@@ -49,7 +61,7 @@ public class MainController {
 			// マイナスして前月分のLocalDateを求める
 			startOfMonth = startOfMonth.minusDays(dayOfWeekValue);
 		}
-		
+
 		boolean judge = false;
 		while (!judge) {
 
@@ -70,60 +82,31 @@ public class MainController {
 		}
 
 		model.addAttribute("matrix", month);
-		
-		
-		
-		
-	
-		
+		return "main";
+
+	}
+
+	@PostMapping("/main/create")
+	public String create(@Validated TaskForm taskForm, AccountUserDetails user, Model model) {
 		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
-		
-		
-		
-		
+		Tasks taskRegister = new Tasks();
+
+		taskRegister.setName(user.getName());
+		taskRegister.setText(taskForm.getText());
+		taskRegister.setTitle(taskForm.getTitle());
+		taskRegister.setDate(LocalDateTime.now());
+
 		model.addAttribute("tasks", tasks);
 		
+		repo.save(taskRegister);
 
-		return "main";		
 		
-		
-	
+		return "redirect:/main";
 	}
 
 }
 
 
-//	@PostMapping("/main/create")
-//	public String create(@AuthenticationPrincipal AccountUserDetails user, Model model) {
-//		TaskRegister taskRegister = new TaskRegister();
-//		taskRegister.setName(user.getName());
-//		taskRegister.setText();
-//		
-//		
-//		return "redirect:/main";
-//	}
-	
-	
-
-	
-	
-
-		
-			
-	
-	
-
-	
-     //	return "redirect:main";
-	
-//日付をクリックするとタスクの登録画面へ遷移する？
-// @RequestMapping("/main/create/{date}")
-//    public String create(@PathVariable("date") LocalDate date, Model model) {
-//
-//        return "";
-		
-	//タスクをクリックすると編集画面へ遷移する
 
 
-
-
+// タスクをクリックすると編集画面へ遷移する

@@ -11,8 +11,9 @@ import lombok.Data;
 
 //Getter、Setterを省略するためのLombokのアノテーション
 @Data
+//データベースのテーブルと対応するJavaオブジェクト
 @Entity
-public class TaskRegister {
+public class Tasks {
 	// userテーブルのプライマリーキーidに付けるアノテーション
 	@Id
 	// idがMySQLのauto_incrementの場合、自動生成させるためにアノテーションを付ける
