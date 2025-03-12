@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -50,7 +49,7 @@ public class MainController {
 			// マイナスして前月分のLocalDateを求める
 			startOfMonth = startOfMonth.minusDays(dayOfWeekValue);
 		}
-//
+		
 		boolean judge = false;
 		while (!judge) {
 
@@ -71,33 +70,60 @@ public class MainController {
 		}
 
 		model.addAttribute("matrix", month);
+		
+		
+		
+		
+	
+		
+		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
+		
+		
+		
+		
+		model.addAttribute("tasks", tasks);
+		
 
-		return "main";
+		return "main";		
 		
 		
+	
 	}
-	
-	
-	@PostMapping("/main/create")
-	public String create(Model model) {
-	MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
-	
-	model.addAttribute("tasks", tasks);
-	
-	return "main";
-	
-	//日付が押されたら登録画面に遷移する？
-//	@PostMapping("/main/create/{date}")
-//	public String create() {
-//		return "create";
-		
-		
-		
-	}
-	
-	
-	
 
 }
+
+
+//	@PostMapping("/main/create")
+//	public String create(@AuthenticationPrincipal AccountUserDetails user, Model model) {
+//		TaskRegister taskRegister = new TaskRegister();
+//		taskRegister.setName(user.getName());
+//		taskRegister.setText();
+//		
+//		
+//		return "redirect:/main";
+//	}
+	
+	
+
+	
+	
+
+		
+			
+	
+	
+
+	
+     //	return "redirect:main";
+	
+//日付をクリックするとタスクの登録画面へ遷移する？
+// @RequestMapping("/main/create/{date}")
+//    public String create(@PathVariable("date") LocalDate date, Model model) {
+//
+//        return "";
+		
+	//タスクをクリックすると編集画面へ遷移する
+
+
 
 
