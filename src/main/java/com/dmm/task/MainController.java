@@ -24,7 +24,7 @@ import com.dmm.task.service.AccountUserDetails;
 public class MainController {
 
 	@Autowired
-	private TaskRepository rapo;
+	private TaskRepository repo;
 
 	@RequestMapping("/main")
 	public String main(Model model, LocalDate date) {
@@ -102,11 +102,21 @@ public class MainController {
 
 		
 		return "redirect:/main";
+		
+		
 	}
+	
+
 
 }
 
 
 
+////タスク削除task.はどこを指してる？
+//@PostMapping("/main/delete/' + ${task.id}}")
+////URL のパスに含まれる変数（パス変数）をメソッドの引数にマッピング
+//public String deleteTask(@PathVariable Integer id) {
+//	repo.deleteById(id);
+//	return "redirect:/main";
 
 // タスクをクリックすると編集画面へ遷移する
