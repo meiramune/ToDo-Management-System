@@ -78,17 +78,32 @@ public class MainController {
 
 			month.add(week);
 			week = new LinkedList<>();
-
+			
 		}
 
-		model.addAttribute("matrix", month);
-		return "main";
+			MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
+			List<Tasks> taskList = repo.findAll();
+			for (Tasks task : taskList) {
 
-	}
+				if (task.getDate() != null) {
+
+					LocalDate localDate = task.getDate().toLocalDate();
+
+					tasks.add(localDate, task);
+
+				}
+				
+			}
+			model.addAttribute("tasks", tasks);
+			model.addAttribute("matrix", month);
+			return "main";
+
+		}
+	
 
 	@PostMapping("/main/create")
 	public String create(@Validated TaskForm taskForm, AccountUserDetails user, Model model) {
-		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
+
 		Tasks taskRegister = new Tasks();
 
 		taskRegister.setName(user.getName());
@@ -96,27 +111,10 @@ public class MainController {
 		taskRegister.setTitle(taskForm.getTitle());
 		taskRegister.setDate(LocalDateTime.now());
 
-		model.addAttribute("tasks", tasks);
-		
 		repo.save(taskRegister);
 
-		
 		return "redirect:/main";
-		
-		
-	}
-	
 
+	}
 
 }
-
-
-
-////タスク削除task.はどこを指してる？
-//@PostMapping("/main/delete/' + ${task.id}}")
-////URL のパスに含まれる変数（パス変数）をメソッドの引数にマッピング
-//public String deleteTask(@PathVariable Integer id) {
-//	repo.deleteById(id);
-//	return "redirect:/main";
-
-// タスクをクリックすると編集画面へ遷移する
