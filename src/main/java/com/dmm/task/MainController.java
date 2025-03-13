@@ -78,30 +78,31 @@ public class MainController {
 
 			month.add(week);
 			week = new LinkedList<>();
-			
+
 		}
 
-			MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
-			List<Tasks> taskList = repo.findAll();
-			for (Tasks task : taskList) {
+		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
+		List<Tasks> taskList = repo.findAll();
+		for (Tasks task : taskList) {
 
-				if (task.getDate() != null) {
+			if (task.getDate() != null) {
 
-					LocalDate localDate = task.getDate().toLocalDate();
+				LocalDate localDate = task.getDate().toLocalDate();
 
-					tasks.add(localDate, task);
+				tasks.add(localDate, task);
 
-				}
-				
 			}
-			model.addAttribute("tasks", tasks);
-			model.addAttribute("matrix", month);
-			return "main";
 
 		}
-	
+		
+		System.out.println(tasks);
+		model.addAttribute("tasks", tasks);
+		model.addAttribute("matrix", month);
+		return "main";
 
-	@PostMapping("/main/create")
+	}
+
+	@PostMapping("/main/create/{date}")
 	public String create(@Validated TaskForm taskForm, AccountUserDetails user, Model model) {
 
 		Tasks taskRegister = new Tasks();
@@ -113,8 +114,12 @@ public class MainController {
 
 		repo.save(taskRegister);
 
-		return "redirect:/main";
+		return "redirect:main";
 
 	}
 
-}
+//	@RequestMapping("/main/edit/{id}")
+//	public String edit() {
+//		return "main";
+	}
+
