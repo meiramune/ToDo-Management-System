@@ -1,7 +1,5 @@
 package com.dmm.task;
 
-import java.time.LocalDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -48,8 +46,8 @@ public class CreateController {
 		taskRegister.setName(user.getName());
 		taskRegister.setText(taskForm.getText());
 		taskRegister.setTitle(taskForm.getTitle());
-		taskRegister.setDate(LocalDateTime.now());
-//		taskRegister.setDone(taskForm.getDone());
+		taskRegister.setDate(taskForm.getDate());
+		taskRegister.setDone(false);
 
 		repo.save(taskRegister);
 

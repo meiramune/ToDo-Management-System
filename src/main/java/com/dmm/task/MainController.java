@@ -2,7 +2,6 @@ package com.dmm.task;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,14 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.dmm.task.data.entity.Tasks;
 import com.dmm.task.data.repository.TaskRepository;
-import com.dmm.task.form.TaskForm;
-import com.dmm.task.service.AccountUserDetails;
 
 @Controller
 public class MainController {
@@ -102,24 +97,8 @@ public class MainController {
 
 	}
 
-	@PostMapping("/main/create/{date}")
-	public String create(@Validated TaskForm taskForm, AccountUserDetails user, Model model) {
+	
 
-		Tasks taskRegister = new Tasks();
 
-		taskRegister.setName(user.getName());
-		taskRegister.setText(taskForm.getText());
-		taskRegister.setTitle(taskForm.getTitle());
-		taskRegister.setDate(LocalDateTime.now());
-
-		repo.save(taskRegister);
-
-		return "redirect:main";
-
-	}
-
-//	@RequestMapping("/main/edit/{id}")
-//	public String edit() {
-//		return "main";
 	}
 
