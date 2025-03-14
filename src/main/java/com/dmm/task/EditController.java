@@ -1,5 +1,7 @@
 package com.dmm.task;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -38,6 +40,14 @@ public class EditController {
 	@PostMapping("/main/edit/{id}")
 	public String edit(@Validated TaskForm taskForm, 
 			@AuthenticationPrincipal AccountUserDetails user, Model model,BindingResult bindingResult) {
+		
+		// バリデーションの結果、エラーがあるかどうかチェック
+		if (bindingResult.hasErrors()) {
+			// エラーがある場合は投稿登録画面を返す
+			List<Tasks> list = repo.findAll();
+			model.addAttribute("tasks", list);
+			return "/main";
+		}
 		Tasks task = new Tasks();
 		task.setId(taskForm.getId());
 		task.setName(user.getName());

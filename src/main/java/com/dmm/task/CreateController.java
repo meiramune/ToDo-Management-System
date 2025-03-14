@@ -1,5 +1,7 @@
 package com.dmm.task;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -35,9 +37,8 @@ public class CreateController {
 		// バリデーションの結果、エラーがあるかどうかチェック
 				if (bindingResult.hasErrors()) {
 					// エラーがある場合は投稿登録画面を返す
-//					List<Tasks> list = repo.findAll(Sort.by(Sort.Direction.DESC, "id"));
-//					model.addAttribute("posts", list);
-//					model.addAttribute("postForm", postForm);
+					List<Tasks> list = repo.findAll();
+					model.addAttribute("tasks", list);
 					return "/main";
 				}
 				

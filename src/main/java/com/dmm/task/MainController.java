@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -24,9 +25,9 @@ public class MainController {
 	private TaskRepository repo;
 
 	@RequestMapping("/main")
-	public String main(Model model, LocalDate date) {
+	public String main(Model model,@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 		// ListのListを用意
-		List<List<LocalDate>> month = new LinkedList<>();
+		List<List<LocalDate>> matrix = new LinkedList<>();
 
 		// 1週間分のLocalDateを格納するList
 		List<LocalDate> week = new LinkedList<LocalDate>();
@@ -72,7 +73,7 @@ public class MainController {
 				startOfMonth = startOfMonth.plusDays(1);
 			}
 
-			month.add(week);
+			matrix.add(week);
 			week = new LinkedList<>();
 
 		}
@@ -101,7 +102,7 @@ public class MainController {
 		model.addAttribute("prev", previousYearMonth.atDay(1));
 	    model.addAttribute("next", nextYearMonth.atDay(1));
 		model.addAttribute("tasks", tasks);
-		model.addAttribute("matrix", month);
+		model.addAttribute("matrix", matrix);
 		return "main";
 		
 		
