@@ -2,6 +2,8 @@ package com.dmm.task;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,18 +33,17 @@ public class MainController {
 //
 		LocalDate d;
 		if (date == null) {
-			d = LocalDate.now().withDayOfMonth(1);
-			;
+			d = LocalDate.now();
 
 		} else {
 			d = date;
 		}
 
 		// LocalDateで今の月の1日目を定義
-		LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
+		LocalDate startOfMonth = d.withDayOfMonth(1);
 
 		// LocalDateで今の月の月末を定義
-		LocalDate endOfMonth = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
+		LocalDate endOfMonth = d.withDayOfMonth(d.lengthOfMonth());
 
 		// 曜日を表すDayOfWeekを取得
 		DayOfWeek w = startOfMonth.getDayOfWeek();
@@ -90,11 +91,21 @@ public class MainController {
 
 		}
 		
-		System.out.println(tasks);
+
+		YearMonth currentYearMonth = YearMonth.from(d);
+        YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
+        YearMonth nextYearMonth = currentYearMonth.plusMonths(1);
+        
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月");
+		model.addAttribute("month",currentYearMonth.format(formatter));
+		model.addAttribute("prev", previousYearMonth.atDay(1));
+	    model.addAttribute("next", nextYearMonth.atDay(1));
 		model.addAttribute("tasks", tasks);
 		model.addAttribute("matrix", month);
 		return "main";
-
+		
+		
+		
 	}
 
 	

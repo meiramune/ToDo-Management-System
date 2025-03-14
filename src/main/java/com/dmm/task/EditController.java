@@ -23,7 +23,7 @@ public class EditController {
 	private TaskRepository repo;
 
 	@GetMapping("/main/edit/{id}")
-	public String edit(@PathVariable Integer id, Model model) {
+	public String showedit(@PathVariable Integer id, Model model) {
 		//このリポジトリを使用することでデータの検索
 		Tasks task = repo.findById(id).orElse(null);
 		if (task != null) {
@@ -44,8 +44,7 @@ public class EditController {
 		task.setText(taskForm.getText());
 		task.setTitle(taskForm.getTitle());
 		task.setDate(taskForm.getDate().atStartOfDay());
-		
-		task.setDone(false);
+		task.setDone(taskForm.isDone());
 
 		repo.save(task);
 
