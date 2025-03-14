@@ -46,7 +46,7 @@ public class CreateController {
 		taskRegister.setName(user.getName());
 		taskRegister.setText(taskForm.getText());
 		taskRegister.setTitle(taskForm.getTitle());
-		taskRegister.setDate(taskForm.getDate());
+		taskRegister.setDate(taskForm.getDate().atStartOfDay());
 		taskRegister.setDone(false);
 
 		repo.save(taskRegister);
