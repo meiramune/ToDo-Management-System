@@ -85,10 +85,25 @@ public class MainController {
 		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
 		
 		List<Tasks> taskList;
-		if (user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(a -> a.equals("ROLE_ADMIN"))) {
-			taskList=repo.findAllByDateBetween(startOfMonth.atTime(0,0),endOfMonth.atTime(23, 59, 59));
+		LocalDate startDate;
+		LocalDate endDate;
+
+		if (date == null) {
+			LocalDate currentDate = LocalDate.now();
+			startDate = currentDate.minusYears(1).withDayOfMonth(1); // 1年前の月の初日
+			endDate = currentDate.plusYears(1).withDayOfMonth(currentDate.plusYears(1).lengthOfMonth()); // 1年後の月の末日
+		} else {
+			startDate = date.minusYears(1).withDayOfMonth(1); // 指定された日から1年前の月の初日
+			endDate = date.plusYears(1).withDayOfMonth(date.plusYears(1).lengthOfMonth()); // 指定された日から1年後の月の末日
+		}
+		
+		if (user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(a -> a.equals("ADMIN"))) {
+			
+			taskList=repo.findAllByDateBetween(startDate.atTime(0,0,0),endDate.atTime(23, 59, 59));
+			
 		}else {
-			taskList=repo.findByDateBetween(startOfMonth.atTime(0,0), endOfMonth.atTime(23, 59, 59), user.getName());
+			
+			taskList=repo.findByDateBetween(startDate.atTime(0,0,0), endDate.atTime(23, 59, 59), user.getName());
 		}
 		
 		for (Tasks task : taskList) {
