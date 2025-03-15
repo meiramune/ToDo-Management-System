@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.dmm.task.data.entity.Tasks;
 import com.dmm.task.data.repository.TaskRepository;
+import com.dmm.task.service.AccountUserDetails;
 
 @Controller
 public class MainController {
@@ -25,13 +28,14 @@ public class MainController {
 	private TaskRepository repo;
 
 	@RequestMapping("/main")
-	public String main(Model model,@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+	public String main(Model model, @AuthenticationPrincipal AccountUserDetails user,
+		      @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 		// ListのListを用意
 		List<List<LocalDate>> matrix = new LinkedList<>();
 
 		// 1週間分のLocalDateを格納するList
 		List<LocalDate> week = new LinkedList<LocalDate>();
-//
+
 		LocalDate d;
 		if (date == null) {
 			d = LocalDate.now();
@@ -79,7 +83,14 @@ public class MainController {
 		}
 
 		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
-		List<Tasks> taskList = repo.findAll();
+		
+		List<Tasks> taskList;
+		if (user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(a -> a.equals("ROLE_ADMIN"))) {
+			taskList=repo.findAllByDateBetween(startOfMonth.atTime(0,0),endOfMonth.atTime(23, 59, 59));
+		}else {
+			taskList=repo.findByDateBetween(startOfMonth.atTime(0,0), endOfMonth.atTime(23, 59, 59), user.getName());
+		}
+		
 		for (Tasks task : taskList) {
 
 			if (task.getDate() != null) {
