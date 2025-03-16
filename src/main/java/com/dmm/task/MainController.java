@@ -29,7 +29,7 @@ public class MainController {
 
 	@RequestMapping("/main")
 	public String main(Model model, @AuthenticationPrincipal AccountUserDetails user,
-		      @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+			@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 		// ListのListを用意
 		List<List<LocalDate>> matrix = new LinkedList<>();
 
@@ -67,80 +67,63 @@ public class MainController {
 		while (!judge) {
 
 			for (int j = 1; j <= number; j++) {
-
 				week.add(startOfMonth);
-
+				
 				if (startOfMonth.equals(endOfMonth)) {
 					judge = true;
-
 				}
 				startOfMonth = startOfMonth.plusDays(1);
 			}
-
 			matrix.add(week);
 			week = new LinkedList<>();
-
 		}
 
 		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
-		
+
 		List<Tasks> taskList;
 		LocalDate startDate;
 		LocalDate endDate;
 
 		if (date == null) {
 			LocalDate currentDate = LocalDate.now();
-			startDate = currentDate.minusYears(1).withDayOfMonth(1); // 1年前の月の初日
-			endDate = currentDate.plusYears(1).withDayOfMonth(currentDate.plusYears(1).lengthOfMonth()); // 1年後の月の末日
+			// 1年前の月の初日
+			startDate = currentDate.minusYears(1).withDayOfMonth(1); 
+			// 1年後の月の末日
+			endDate = currentDate.plusYears(1).withDayOfMonth(currentDate.plusYears(1).lengthOfMonth()); 
 		} else {
-			startDate = date.minusYears(1).withDayOfMonth(1); // 指定された日から1年前の月の初日
-			endDate = date.plusYears(1).withDayOfMonth(date.plusYears(1).lengthOfMonth()); // 指定された日から1年後の月の末日
+			 // 指定された日から1年前の月の初日
+			startDate = date.minusYears(1).withDayOfMonth(1);
+			// 指定された日から1年後の月の末日
+			endDate = date.plusYears(1).withDayOfMonth(date.plusYears(1).lengthOfMonth()); 
 		}
+		//DEBUG用
 		System.out.println("[DEBUG] ユーザー名: " + user.getName());
 		System.out.println("[DEBUG] ユーザー権限: " + user.getAuthorities());
+		//管理者（admin）でログインしている場合のみ、全員分のタスクを表示
 		if (user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(a -> a.equals("ROLE_ADMIN"))) {
-			
-			taskList=repo.findAllByDateBetween(startDate.atTime(0,0,0),endDate.atTime(23, 59, 59));
-			System.out.println("[DEBUG]");
-			
-		}else {
-			System.out.println("[DEBUG]");
-			taskList=repo.findByDateBetween(startDate.atTime(0,0,0), endDate.atTime(23, 59, 59), user.getName());
+			taskList = repo.findAllByDateBetween(startDate.atTime(0, 0, 0), endDate.atTime(23, 59, 59));
+		} else {
+			taskList = repo.findByDateBetween(startDate.atTime(0, 0, 0), endDate.atTime(23, 59, 59), user.getName());
 		}
-		
-    	
-		
 		for (Tasks task : taskList) {
-
 			if (task.getDate() != null) {
-
 				LocalDate localDate = task.getDate().toLocalDate();
-
 				tasks.add(localDate, task);
-
 			}
-
 		}
 		
-
 		YearMonth currentYearMonth = YearMonth.from(d);
-        YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
-        YearMonth nextYearMonth = currentYearMonth.plusMonths(1);
-        
+		YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
+		YearMonth nextYearMonth = currentYearMonth.plusMonths(1);
+
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月");
-		model.addAttribute("month",currentYearMonth.format(formatter));
+		model.addAttribute("month", currentYearMonth.format(formatter));
 		model.addAttribute("prev", previousYearMonth.atDay(1));
-	    model.addAttribute("next", nextYearMonth.atDay(1));
+		model.addAttribute("next", nextYearMonth.atDay(1));
 		model.addAttribute("tasks", tasks);
 		model.addAttribute("matrix", matrix);
 		return "main";
-		
-		
-		
-	}
-
-	
-
 
 	}
 
+}
