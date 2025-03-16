@@ -57,10 +57,12 @@ public class MainController {
 		int dayOfWeekValue = w.getValue();
 
 		final int number = 7;
-
+		LocalDate stertOfTask;
 		if (dayOfWeekValue != number) {
 			// マイナスして前月分のLocalDateを求める
 			startOfMonth = startOfMonth.minusDays(dayOfWeekValue);
+			//
+			stertOfTask = startOfMonth;
 		}
 
 		boolean judge = false;
@@ -81,29 +83,15 @@ public class MainController {
 		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
 
 		List<Tasks> taskList;
-		LocalDate startDate;
-		LocalDate endDate;
 
-		if (date == null) {
-			LocalDate currentDate = LocalDate.now();
-			// 1年前の月の初日
-			startDate = currentDate.minusYears(1).withDayOfMonth(1); 
-			// 1年後の月の末日
-			endDate = currentDate.plusYears(1).withDayOfMonth(currentDate.plusYears(1).lengthOfMonth()); 
-		} else {
-			 // 指定された日から1年前の月の初日
-			startDate = date.minusYears(1).withDayOfMonth(1);
-			// 指定された日から1年後の月の末日
-			endDate = date.plusYears(1).withDayOfMonth(date.plusYears(1).lengthOfMonth()); 
-		}
 		//DEBUG用
 		System.out.println("[DEBUG] ユーザー名: " + user.getName());
 		System.out.println("[DEBUG] ユーザー権限: " + user.getAuthorities());
 		//管理者（admin）でログインしている場合のみ、全員分のタスクを表示
 		if (user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(a -> a.equals("ROLE_ADMIN"))) {
-			taskList = repo.findAllByDateBetween(startDate.atTime(0, 0, 0), endDate.atTime(23, 59, 59));
+			taskList = repo.findAllByDateBetween(stertOfTask.atTime(0, 0, 0), endOfMonth.atTime(23, 59, 59));
 		} else {
-			taskList = repo.findByDateBetween(startDate.atTime(0, 0, 0), endDate.atTime(23, 59, 59), user.getName());
+			taskList = repo.findByDateBetween(d.withDayOfMonth(1).atTime(0, 0, 0), endOfMonth.atTime(23, 59, 59), user.getName());
 		}
 		for (Tasks task : taskList) {
 			if (task.getDate() != null) {

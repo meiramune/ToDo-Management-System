@@ -36,7 +36,7 @@ public class EditController {
 		}
 		return "redirect:/error";
 	}
-	//更新、削除ボタンの遷移画面、カレンダー上にチェックマーク（✅
+	//更新、カレンダー上にチェックマーク（✅
 	@PostMapping("/main/edit/{id}")
 	public String edit(@Validated TaskForm taskForm, 
 			@AuthenticationPrincipal AccountUserDetails user, Model model,BindingResult bindingResult) {
@@ -54,13 +54,14 @@ public class EditController {
 		task.setText(taskForm.getText());
 		task.setTitle(taskForm.getTitle());
 		task.setDate(taskForm.getDate().atStartOfDay());
+		//カレンダー上にチェックマーク（✅
 		task.setDone(taskForm.isDone());
 
 		repo.save(task);
 
 		return "redirect:/main";
 	}
-	
+	    //削除ボタンの遷移画面
 		@PostMapping("/main/delete/{id}")
 		public String delete(@PathVariable Integer id) {
 			repo.deleteById(id);
