@@ -96,15 +96,19 @@ public class MainController {
 			startDate = date.minusYears(1).withDayOfMonth(1); // 指定された日から1年前の月の初日
 			endDate = date.plusYears(1).withDayOfMonth(date.plusYears(1).lengthOfMonth()); // 指定された日から1年後の月の末日
 		}
-		
-		if (user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(a -> a.equals("ADMIN"))) {
+		System.out.println("[DEBUG] ユーザー名: " + user.getName());
+		System.out.println("[DEBUG] ユーザー権限: " + user.getAuthorities());
+		if (user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(a -> a.equals("ROLE_ADMIN"))) {
 			
 			taskList=repo.findAllByDateBetween(startDate.atTime(0,0,0),endDate.atTime(23, 59, 59));
+			System.out.println("[DEBUG]");
 			
 		}else {
-			
+			System.out.println("[DEBUG]");
 			taskList=repo.findByDateBetween(startDate.atTime(0,0,0), endDate.atTime(23, 59, 59), user.getName());
 		}
+		
+    	
 		
 		for (Tasks task : taskList) {
 
