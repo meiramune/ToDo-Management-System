@@ -82,7 +82,7 @@ public class MainController {
 		}
 		//タスク表示範囲取得用（エンド）
 		LocalDate endOfTask;
-		endOfTask = startOfMonth;
+		endOfTask = startOfMonth.minusDays(1);
 		
 		
 		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
@@ -92,11 +92,14 @@ public class MainController {
 		//DEBUG用
 		System.out.println("[DEBUG] ユーザー名: " + user.getName());
 		System.out.println("[DEBUG] ユーザー権限: " + user.getAuthorities());
+		System.out.println("[DEBUG]"+endOfTask.atTime(0,0,0));
+		
 		//管理者（admin）でログインしている場合のみ、全員分のタスクを表示
 		if (user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(a -> a.equals("ROLE_ADMIN"))) {
-			taskList = repo.findAllByDateBetween(startOfTask.atTime(0, 0, 0), endOfTask.atTime(23, 59, 59));
+			taskList = repo.findAllByDateBetween(startOfTask.atTime(0, 0, 0), endOfTask.atTime(0,0,0 ));
 		} else {
-			taskList = repo.findByDateBetween(startOfTask.atTime(0, 0, 0), endOfTask.atTime(23, 59, 59), user.getName());
+			taskList = repo.findByDateBetween(startOfTask.atTime(0, 0, 0), endOfTask.atTime(0,0,0), user.getName());
+			
 		}
 		for (Tasks task : taskList) {
 			if (task.getDate() != null) {
